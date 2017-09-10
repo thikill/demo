@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+
+<head>
+	<title>Insert title here</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" />
+	
+<script src="../static/jQuery/jquery-2.2.3.min.js" th:src="@{jQuery/jquery-2.2.3.min.js}"></script>
+<script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{bootstrap/js/bootstrap.min.js}"></script>
+<script src="../static/plugins/slimScroll/jquery.slimscroll.min.js" th:src="@{plugins/slimScroll/jquery.slimscroll.min.js}"></script>
+<script src="../static/plugins/fastclick/fastclick.min.js" th:src="@{plugins/fastclick/fastclick.min.js}"></script>
+<script src="../static/AdminLTE/js/app.min.js" th:src="@{AdminLTE/js/app.min.js}"></script>
+<script src="../static/plugins/jqgrid/js/grid.locale-en.js" th:src="@{plugins/jqgrid/js/grid.locale-en.js}"></script>
+<script src="../static/plugins/jqgrid/js/jquery.jqGrid.min.js" th:src="@{plugins/jqgrid/js/jquery.jqGrid.min.js}"></script>
+<script src="../static/jQuery/jquery-ui.min.js" th:src="@{jQuery/jquery-ui.min.js}"></script>
+
+	<script type="text/javascript">
+	   
+	</script>	
+</head>
+
+<body>
+	<section layout:fragment="content">
+		<p>JqGrid - Spring 3 MVC Integration Tutorial</p>
+<div id="jqgrid">
+	<table id="grid"></table>
+	<div id="pager"></div>
+</div>
+		<script th:inline="javascript">
+
+		function viewInline(rowId){
+		    //Some code
+		    jQuery("#grid").jqGrid("viewGridRow", rowId);
+
+		}
+jQuery("#grid").jqGrid({
+   	url:'/crud',
+	datatype: "json",
+   	colNames:['ID','NAME', "EMAIL", "ROLE", "Action"],
+   	colModel:[
+   		{name:'id',index:'id', width:55,editable: false },
+   		{name:'name',index:'name asc, invdate', width:100, editable: true,},
+   		{name:'email',index:'email asc, invdate', width:100, editable: true,},
+   		{name:'role',index:'role asc, invdate', width:100, editable: true,},
+   	 {
+         name: 'myac', index: '', width: 120, fixed: true, sortable: false, resize: false,viewable: false,
+         formatter: 'actions',
+         formatoptions: {
+             keys: true,
+             //delbutton: false,//disable delete button
+             editbutton: false,
+             editformbutton:true,
+            
+         }
+     }
+   	],
+   	postData: { 
+	},
+	rowNum:2,
+   	rowList:[2,20,40,60],
+   	height: 280,
+   	autowidth: true,
+	rownumbers: true,
+   	pager: '#pager',
+   	sortname: 'id',
+    viewrecords: true,
+    sortorder: "asc",
+    caption:"Users",
+    emptyrecords: "Empty records",
+    loadonce: false,
+    loadComplete: function() {
+    	 var table = this;
+    	 updatePagerIcons(table);
+    	
+	},
+    jsonReader : {
+        root: "rows",
+        page: "page",
+        total: "total",
+        records: "records",
+        repeatitems: false,
+        cell: "cell",
+        id: "id"
+    }
+});
+jQuery("#list2").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false});
+//replace icons with FontAwesome icons like above
+function updatePagerIcons(table) {
+    var replacement =
+        {
+            'ui-icon-seek-first': 'ace-icon fa fa-angle-double-left bigger-140',
+            'ui-icon-seek-prev': 'ace-icon fa fa-angle-left bigger-140',
+            'ui-icon-seek-next': 'ace-icon fa fa-angle-right bigger-140',
+            'ui-icon-seek-end': 'ace-icon fa fa-angle-double-right bigger-140'
+        };
+    $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function () {
+        var icon = $(this);
+        var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+        if ($class in replacement) icon.attr('class', 'ui-icon ' + replacement[$class]);
+    })
+    $('#grid-pager_left').css("width", "");
+}
+		</script>
+
+
+
+		<div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
+			Logged in user: <span th:text="${#authentication.getPrincipal().getName()}"></span>
+			<div>
+				<form action="#" th:action="@{/logout}" method="post">
+					<input type="submit" value="Logout" />
+				</form>
+			</div>
+		</div>
+
+
+		<div class="content-header clearfix">
+			<h1 class="pull-left">User Management</h1>
+			<div class="pull-right">&nbsp;</div>
+		</div>
+		<form action="#" method="post" th:action="@{/user/search}" th:object="${user}">
+			<div class="content">
+				<div class="form-horizontal">
+					<div class="panel-group">
+						<div class="panel panel-default panel-search">
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<div class="col-md-4">Name</div>
+											<div class="col-md-8">
+												<input type="text" th:field="*{name}" />
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-4">Mail address</div>
+											<div class="col-md-8">
+												<input type="text" th:field="*{email}" />
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-4">Role</div>
+											<div class="col-md-8">
+												<select th:field="*{role}">
+													<option value="">--Select Role--</option>
+													<option th:each="role : ${roles}" th:value="${role.id}"
+														th:text="${role.name}">Wireframe</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-8 col-md-offset-4">
+												<button type="submit">Search</button>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+		<span th:text="${success}"></span>
+		<div sec:authorize="hasAuthority('USER_WRITE')">
+			<a th:href="@{/user/create}"> Add New</a>
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>name</th>
+					<th>email</th>
+					<th>role</th>
+					<div sec:authorize="hasAuthority('USER_WRITE')">
+						<th>edit</th>
+						<th>delete</th>
+					</div>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="user : ${users}">
+					<td th:text="${user.id}"></td>
+					<td th:text="${user.name}"></td>
+					<td th:text="${user.email}"></td>
+					<td th:text="${user.role.name}"></td>
+					<div sec:authorize="hasAuthority('USER_WRITE')">
+						<td><a th:href="@{/user/{id}/edit(id=${user.id})}">edit</a></td>
+						<td><a th:href="@{/user/{id}/delete(id=${user.id})}">delete</a></td>
+					</div>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+</body>
+
+</html>
