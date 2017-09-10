@@ -6,7 +6,7 @@
 </head>
 <body>
 	<section layout:fragment="content">
-	<form action="#" th:action="@{/user/save}" th:object="${user}"
+	<form action="#" th:action="@{/users/save}" th:object="${user}"
 		method="POST">
 		<input type="hidden" th:field="*{id}" />
 		<table>
@@ -33,7 +33,7 @@
 			</tr>
 		</table>
 		<button type="submit" value="save">save</button>
-		<a th:href="@{/user/cancel}">Cancel</a>
+		<a th:href="@{/users/cancel}">Cancel</a>
 	</form>
 	</section>
 

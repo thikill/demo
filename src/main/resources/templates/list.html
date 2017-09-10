@@ -1,114 +1,283 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout">
 
 <head>
-	<title>Insert title here</title>
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" />
-	
-<script src="../static/jQuery/jquery-2.2.3.min.js" th:src="@{jQuery/jquery-2.2.3.min.js}"></script>
-<script src="../static/bootstrap/js/bootstrap.min.js" th:src="@{bootstrap/js/bootstrap.min.js}"></script>
-<script src="../static/plugins/slimScroll/jquery.slimscroll.min.js" th:src="@{plugins/slimScroll/jquery.slimscroll.min.js}"></script>
-<script src="../static/plugins/fastclick/fastclick.min.js" th:src="@{plugins/fastclick/fastclick.min.js}"></script>
-<script src="../static/AdminLTE/js/app.min.js" th:src="@{AdminLTE/js/app.min.js}"></script>
-<script src="../static/plugins/jqgrid/js/grid.locale-en.js" th:src="@{plugins/jqgrid/js/grid.locale-en.js}"></script>
-<script src="../static/plugins/jqgrid/js/jquery.jqGrid.min.js" th:src="@{plugins/jqgrid/js/jquery.jqGrid.min.js}"></script>
-<script src="../static/jQuery/jquery-ui.min.js" th:src="@{jQuery/jquery-ui.min.js}"></script>
+<title>Insert title here</title>
 
-	<script type="text/javascript">
-	   
-	</script>	
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" />
+
+<script src="../static/jQuery/jquery-2.2.3.min.js"
+	th:src="@{jQuery/jquery-2.2.3.min.js}"></script>
+<script src="../static/bootstrap/js/bootstrap.min.js"
+	th:src="@{bootstrap/js/bootstrap.min.js}"></script>
+<script src="../static/plugins/slimScroll/jquery.slimscroll.min.js"
+	th:src="@{plugins/slimScroll/jquery.slimscroll.min.js}"></script>
+<script src="../static/plugins/fastclick/fastclick.min.js"
+	th:src="@{plugins/fastclick/fastclick.min.js}"></script>
+<script src="../static/AdminLTE/js/app.min.js"
+	th:src="@{AdminLTE/js/app.min.js}"></script>
+<script src="../static/plugins/jqgrid/js/grid.locale-en.js"
+	th:src="@{plugins/jqgrid/js/grid.locale-en.js}"></script>
+<script src="../static/plugins/jqgrid/js/jquery.jqGrid.min.js"
+	th:src="@{plugins/jqgrid/js/jquery.jqGrid.min.js}"></script>
+<script src="../static/jQuery/jquery-ui.min.js"
+	th:src="@{jQuery/jquery-ui.min.js}"></script>
+
+<script type="text/javascript">
+	
+</script>
 </head>
 
 <body>
 	<section layout:fragment="content">
 		<p>JqGrid - Spring 3 MVC Integration Tutorial</p>
-<div id="jqgrid">
-	<table id="grid"></table>
-	<div id="pager"></div>
-</div>
+		<div id="jqgrid">
+			<table id="grid"></table>
+			<div id="pager"></div>
+		</div>
 		<script th:inline="javascript">
+		 var jq = jQuery.noConflict();
+		jq(function() {
+			jQuery("#grid").jqGrid({
+				url : '/crud',
+				datatype : "json",
+				colNames : [ 'ID', 'NAME', "EMAIL", "ROLE", "Action" ],
+				colModel : [ {
+					name : 'id',
+					index : 'id',
+					width : 55,
+					editable : false
+				}, {
+					name : 'name',
+					index : 'name asc, invdate',
+					width : 100,
+					editable : true,
+				}, {
+					name : 'email',
+					index : 'email asc, invdate',
+					width : 100,
+					editable : true,
+				}, {
+					name : 'role',
+					index : 'role asc, invdate',
+					width : 100,
+					editable : true,
+				}, {
+					name : 'myac',
+					index : '',
+					width : 120,
+					fixed : true,
+					sortable : false,
+					resize : false,
+					viewable : false,
+					formatter : 'actions'
 
-		function viewInline(rowId){
-		    //Some code
-		    jQuery("#grid").jqGrid("viewGridRow", rowId);
+				} ],
 
-		}
-jQuery("#grid").jqGrid({
-   	url:'/crud',
-	datatype: "json",
-   	colNames:['ID','NAME', "EMAIL", "ROLE", "Action"],
-   	colModel:[
-   		{name:'id',index:'id', width:55,editable: false },
-   		{name:'name',index:'name asc, invdate', width:100, editable: true,},
-   		{name:'email',index:'email asc, invdate', width:100, editable: true,},
-   		{name:'role',index:'role asc, invdate', width:100, editable: true,},
-   	 {
-         name: 'myac', index: '', width: 120, fixed: true, sortable: false, resize: false,viewable: false,
-         formatter: 'actions',
-         formatoptions: {
-             keys: true,
-             //delbutton: false,//disable delete button
-             editbutton: false,
-             editformbutton:true,
-            
-         }
-     }
-   	],
-   	postData: { 
-	},
-	rowNum:2,
-   	rowList:[2,20,40,60],
-   	height: 280,
-   	autowidth: true,
-	rownumbers: true,
-   	pager: '#pager',
-   	sortname: 'id',
-    viewrecords: true,
-    sortorder: "asc",
-    caption:"Users",
-    emptyrecords: "Empty records",
-    loadonce: false,
-    loadComplete: function() {
-    	 var table = this;
-    	 updatePagerIcons(table);
-    	
-	},
-    jsonReader : {
-        root: "rows",
-        page: "page",
-        total: "total",
-        records: "records",
-        repeatitems: false,
-        cell: "cell",
-        id: "id"
-    }
-});
-jQuery("#list2").jqGrid('navGrid','#pager2',{edit:false,add:false,del:false});
-//replace icons with FontAwesome icons like above
-function updatePagerIcons(table) {
-    var replacement =
-        {
-            'ui-icon-seek-first': 'ace-icon fa fa-angle-double-left bigger-140',
-            'ui-icon-seek-prev': 'ace-icon fa fa-angle-left bigger-140',
-            'ui-icon-seek-next': 'ace-icon fa fa-angle-right bigger-140',
-            'ui-icon-seek-end': 'ace-icon fa fa-angle-double-right bigger-140'
-        };
-    $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function () {
-        var icon = $(this);
-        var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+				prmNames : {
+					page : "page",
+					rows : "size"
+				},
+				rowNum : 2,
+				rowList : [ 2, 20, 40, 60 ],
+				height : 280,
+				autowidth : true,
+				rownumbers : true,
+				pager : '#pager',
+				sortname : 'id',
+				viewrecords : true,
+				sortorder : "asc",
+				caption : "Users",
+				emptyrecords : "Empty records",
+				loadonce : false
 
-        if ($class in replacement) icon.attr('class', 'ui-icon ' + replacement[$class]);
-    })
-    $('#grid-pager_left').css("width", "");
-}
+			});
+			
+			jq("#grid").jqGrid('navGrid','#pager',
+					{edit:false,add:false,del:false,search:true},
+					{},
+			        {},
+			        {}, 
+					{ 
+				    	sopt:['eq', 'ne', 'lt', 'gt', 'cn', 'bw', 'ew'],
+				        closeOnEscape: true, 
+				        multipleSearch: true, 
+				        closeAfterSearch: true 
+				    }
+			);
+
+
+			
+			jq("#grid").navButtonAdd('#pager',
+					{ 	caption:"Add", 
+						buttonicon:"ui-icon-plus", 
+						onClickButton: addRow,
+						position: "last", 
+						title:"", 
+						cursor: "pointer"
+					} 
+			);
+			
+			jq("#grid").navButtonAdd('#pager',
+					{ 	caption:"Edit", 
+						buttonicon:"ui-icon-pencil", 
+						onClickButton: editRow,
+						position: "last", 
+						title:"", 
+						cursor: "pointer"
+					} 
+			);
+			
+			jq("#grid").navButtonAdd('#pager',
+				{ 	caption:"Delete", 
+					buttonicon:"ui-icon-trash", 
+					onClickButton: deleteRow,
+					position: "last", 
+					title:"", 
+					cursor: "pointer"
+				} 
+			);
+
+			jq("#btnFilter").click(function(){
+				jq("#grid").jqGrid('searchGrid',
+						{multipleSearch: false, 
+							sopt:['eq']}
+				);
+			});			
+		});
 		</script>
 
 
+<script type="text/javascript">
 
-		<div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
-			Logged in user: <span th:text="${#authentication.getPrincipal().getName()}"></span>
+function addRow() {
+
+	// Get the currently selected row
+    jq("#grid").jqGrid('editGridRow','new',
+    		{ 	url: "/crud/add", 
+					editData: {
+			    },
+			    recreateForm: true,
+			    beforeShowForm: function(form) {
+			    },
+				closeAfterAdd: true,
+				reloadAfterSubmit:false,
+				afterSubmit : function(response, postdata) 
+				{ 
+			        var result = eval('(' + response.responseText + ')');
+					var errors = "";
+					
+			        if (result.success == false) {
+			        }  else {
+			        	jq("#dialog").text('Entry has been added successfully');
+						jq("#dialog").dialog( 
+								{	title: 'Success',
+									modal: true,
+									buttons: {"Ok": function()  {
+										jq(this).dialog("close");} 
+									}
+								});
+	                }
+			    	// only used for adding new records
+			    	var new_id = null;
+			    	
+					return [result.success, errors, new_id];
+				}
+    		});
+
+}
+
+function editRow() {
+	// Get the currently selected row
+	var row = jq("#grid").jqGrid('getGridParam','selrow');
+	
+	if( row != null ) 
+		jq("#grid").jqGrid('editGridRow',row,
+			{	url: "/crud/edit", 
+				editData: {
+		        },
+		        recreateForm: true,
+		        beforeShowForm: function(form) {
+		        },
+				closeAfterEdit: true,
+				reloadAfterSubmit:false,
+				afterSubmit : function(response, postdata) 
+				{ 
+		            var result = eval('(' + response.responseText + ')');
+					var errors = "";
+					
+		            if (result.success == false) {
+		            }  else {
+		            	jq("#dialog").text('Entry has been edited successfully');
+						jq("#dialog").dialog( 
+								{	title: 'Success',
+									modal: true,
+									buttons: {"Ok": function()  {
+										jq(this).dialog("close");} 
+									}
+								});
+	                }
+		        	
+					return [result.success, errors, null];
+				}
+			});
+	else jq( "#dialogSelectRow" ).dialog();
+}
+
+function deleteRow() {
+	// Get the currently selected row
+    var row = jq("#grid").jqGrid('getGridParam','selrow');
+
+    // A pop-up dialog will appear to confirm the selected action
+	if( row != null ) 
+		jq("#grid").jqGrid( 'delGridRow', row,
+          	{ url: '/crud/delete', 
+						recreateForm: true,
+			            beforeShowForm: function(form) {
+			              //change title
+			              jq(".delmsg").replaceWith('<span style="white-space: pre;">' +
+			            		  'Delete selected record?' + '</span>');
+	            		  
+						  //hide arrows
+			              jq('#pData').hide();  
+			              jq('#nData').hide();  
+			            },
+          				reloadAfterSubmit:false,
+          				closeAfterDelete: true,
+          				afterSubmit : function(response, postdata) 
+						{ 
+			                var result = eval('(' + response.responseText + ')');
+							var errors = "";
+							
+			                if (result.success == false) {
+			                }  else {
+			                	jq("#dialog").text('Entry has been deleted successfully');
+								jq("#dialog").dialog( 
+										{	title: 'Success',
+											modal: true,
+											buttons: {"Ok": function()  {
+												jq(this).dialog("close");} 
+											}
+										});
+			                }
+		                	// only used for adding new records
+		                	var new_id = null;
+		                	
+							return [result.success, errors, new_id];
+						}
+          	});
+	 else jq( "#dialogSelectRow" ).dialog();
+}
+
+</script>  
+		<div th:fragment="logout" class="logout"
+			sec:authorize="isAuthenticated()">
+			Logged in user: <span
+				th:text="${#authentication.getPrincipal().getName()}"></span>
 			<div>
 				<form action="#" th:action="@{/logout}" method="post">
 					<input type="submit" value="Logout" />
@@ -121,7 +290,8 @@ function updatePagerIcons(table) {
 			<h1 class="pull-left">User Management</h1>
 			<div class="pull-right">&nbsp;</div>
 		</div>
-		<form action="#" method="post" th:action="@{/user/search}" th:object="${user}">
+		<form action="#" method="post" th:action="@{/users/search}"
+			th:object="${user}">
 			<div class="content">
 				<div class="form-horizontal">
 					<div class="panel-group">
@@ -167,7 +337,7 @@ function updatePagerIcons(table) {
 
 		<span th:text="${success}"></span>
 		<div sec:authorize="hasAuthority('USER_WRITE')">
-			<a th:href="@{/user/create}"> Add New</a>
+			<a th:href="@{/users/create}"> Add New</a>
 		</div>
 		<table>
 			<thead>
@@ -189,8 +359,8 @@ function updatePagerIcons(table) {
 					<td th:text="${user.email}"></td>
 					<td th:text="${user.role.name}"></td>
 					<div sec:authorize="hasAuthority('USER_WRITE')">
-						<td><a th:href="@{/user/{id}/edit(id=${user.id})}">edit</a></td>
-						<td><a th:href="@{/user/{id}/delete(id=${user.id})}">delete</a></td>
+						<td><a th:href="@{/users/{id}/edit(id=${user.id})}">edit</a></td>
+						<td><a th:href="@{/users/{id}/delete(id=${user.id})}">delete</a></td>
 					</div>
 				</tr>
 			</tbody>

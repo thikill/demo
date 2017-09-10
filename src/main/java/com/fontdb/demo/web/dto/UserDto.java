@@ -1,4 +1,4 @@
-package com.fontdb.demo.dto;
+package com.fontdb.demo.web.dto;
 
 import com.fontdb.demo.model.User;
 

@@ -22,15 +22,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/css/**", "/index").permitAll().antMatchers("/user/**").hasAuthority("USER_LIST")
-				.and().formLogin().loginPage("/login").defaultSuccessUrl("/user").failureForwardUrl("/login-error");
+		http.authorizeRequests().antMatchers("/css/**", "/index").permitAll().antMatchers("/users/**")
+				.hasAuthority("USER_LIST").and().formLogin().loginPage("/login").defaultSuccessUrl("/users")
+				.failureForwardUrl("/login-error");
 	}
 
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) 
-	  throws Exception {
-	  //auth.userDetailsService(userDetailsService);
-	  auth.authenticationProvider(authProvider());
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(authProvider());
 	}
 
 	@Bean
